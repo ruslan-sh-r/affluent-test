@@ -1,0 +1,40 @@
+{
+  "name": "affluent-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start:dev": "npx ts-node-dev --respawn src/index.ts",
+    "build:dev": "npx prettier --write src/ && npx tsc && npm run lint",
+    "lint": "npx eslint ./src --ext .ts --fix",
+    "typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ruslan-sh-r/affluent-test.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ruslan-sh-r/affluent-test/issues"
+  },
+  "homepage": "https://github.com/ruslan-sh-r/affluent-test#readme",
+  "devDependencies": {
+    "@types/node": "^16.11.9",
+    "@types/progress": "^2.0.5",
+    "@typescript-eslint/eslint-plugin": "^5.4.0",
+    "@typescript-eslint/parser": "^5.4.0",
+    "eslint": "^8.3.0",
+    "prettier": "2.4.1",
+    "ts-node-dev": "^1.1.8",
+    "typescript": "^4.5.2"
+  },
+  "dependencies": {
+    "axios": "^0.24.0",
+    "mysql2": "^2.3.3",
+    "progress": "^2.0.3",
+    "puppeteer": "^11.0.0",
+    "reflect-metadata": "^0.1.13",
+    "typeorm": "^0.2.41"
+  }
+}
