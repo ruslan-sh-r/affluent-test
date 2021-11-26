@@ -18,7 +18,7 @@ class AffluService implements DataParser {
     );
 
     const browser = await puppeteer.launch({
-      headless: false,
+      headless: true,
       args: ['--disable-notifications'],
     });
     const page = await browser.newPage();
@@ -62,21 +62,15 @@ class AffluService implements DataParser {
     bar.tick();
 
     // parse table data
-    const data = await parseTableData(
-      page,
-      '#DataTables_Table_0',
-      dateInfoTableMapping,
-    );
+    const data: Record<keyof typeof DateInfoColumns, string>[] =
+      await parseTableData(page, '#DataTables_Table_0', DateInfoColumns);
     bar.tick();
 
-    console.log(data); // remove
-
-    await page.screenshot({ path: 'example.png' }); // remove
     await browser.close();
     bar.tick();
 
     // save data to db
-    const dateInfos = data.map(dateInfoConverter).filter(isDefined);
+    const dateInfos: DateInfo[] = data.map(dateInfoConverter).filter(isDefined);
     console.log(dateInfos); // remove
     //await getConnection().getRepository(DateInfo).save(dateInfos);
     bar.tick();
@@ -85,30 +79,30 @@ class AffluService implements DataParser {
   }
 }
 
-const dateInfoTableMapping: Record<string, keyof DateInfo> = {
-  Date: 'date',
-  'Commissions - Total': 'commisions',
-  'Sales - Net': 'sales',
-  'Leads - Net': 'leads',
-  Clicks: 'clics',
-  EPC: 'epc',
-  Impressions: 'impressions',
-  CR: 'cr',
-};
+enum DateInfoColumns {
+  Date,
+  'Commissions - Total',
+  'Sales - Net',
+  'Leads - Net',
+  Clicks,
+  EPC,
+  Impressions,
+  CR,
+}
 
 const dateInfoConverter = (
-  info: Record<keyof DateInfo, string>,
+  info: Record<keyof typeof DateInfoColumns, string>,
 ): DateInfo | undefined => {
   try {
     return {
-      date: new Date(info.date),
-      commisions: info.commisions,
-      sales: +info.sales,
-      leads: +info.leads,
-      clics: +info.clics,
-      epc: info.epc,
-      impressions: +info.impressions,
-      cr: info.cr,
+      date: new Date(info.Date),
+      commisions: info['Commissions - Total'],
+      sales: +info['Sales - Net'],
+      leads: +info['Leads - Net'],
+      clics: +info.Clicks,
+      epc: info.EPC,
+      impressions: +info.Impressions,
+      cr: info.CR,
     };
   } catch (error) {
     console.log(`Can't convert date info: ${info}`, error);
