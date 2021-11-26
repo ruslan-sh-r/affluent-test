@@ -3,7 +3,7 @@ import { Page } from 'puppeteer';
 /**
  * Find table by id on the page and convert rows into objects array.
  * @param page
- * @param tableId
+ * @param tableSelector
  * @param mapping enum with desired column names. If column doesn't have a name then use template 'column{index}' - where index is a column number starting from 0.
  * @returns
  */
@@ -12,11 +12,11 @@ export const parseTableData = async <
   TEnum extends Record<T, string | number>,
 >(
   page: Page,
-  tableId: string,
+  tableSelector: string,
   mapping: TEnum,
 ): Promise<Record<T, string>[]> => {
   const columnIdxMapping: Record<T, number> = await page.$$eval(
-    `${tableId} thead th`,
+    `${tableSelector} thead th`,
     (elements: any, colMapping: any) => {
       return elements.reduce(
         (idxMapping: Record<T, number>, x: any, i: number) => {
@@ -34,7 +34,7 @@ export const parseTableData = async <
 
   const resObjects = await Promise.all(
     (
-      await page.$$(`${tableId} tbody tr`)
+      await page.$$(`${tableSelector} tbody tr`)
     ).map(async (row: any) => {
       const columnValues: string[] = await row.$$eval(
         'td',

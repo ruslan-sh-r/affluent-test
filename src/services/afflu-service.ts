@@ -4,6 +4,7 @@ import { DateInfo } from '../entity/DateInfo';
 import { parseTableData } from '../utils/puppeteer-helpers';
 import ProgressBar from 'progress';
 import { isDefined } from '../utils/type-helpers';
+import { getConnection } from 'typeorm';
 
 const username = 'developertest@affluent.io';
 const password = 'Wn4F6g*N88EPiOyW';
@@ -71,8 +72,8 @@ class AffluService implements DataParser {
 
     // save data to db
     const dateInfos: DateInfo[] = data.map(dateInfoConverter).filter(isDefined);
-    console.log(dateInfos); // remove
-    //await getConnection().getRepository(DateInfo).save(dateInfos);
+    console.log(dateInfos);
+    await getConnection().getRepository(DateInfo).save(dateInfos);
     bar.tick();
 
     console.log('Data successfully loaded from afflu.net');
